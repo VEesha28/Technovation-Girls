@@ -125,7 +125,7 @@ export default function App() {
           <Text style={styles.optionText}>CPR</Text>
         </View>
         <View style={styles.optionCard}>
-          <Text style={styles.optionText}>Hemlick Maneuver</Text>
+          <Text style={styles.optionText}>Hemlich Maneuver</Text>
         </View>
       </View>
 
