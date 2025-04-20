@@ -14,6 +14,10 @@ import * as Location from 'expo-location';
 import * as Font from 'expo-font';
 import Modal from 'react-native-modal';
 
+import { Card } from 'react-native-paper';
+// or any files within the Snack
+import AssetExample from './components/AssetExample';
+
 export default function App() {
   const [isFlashlightOn, setFlashlightOn] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
