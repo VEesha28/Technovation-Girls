@@ -39,7 +39,7 @@ export default function App() {
 
   const loadFonts = async () => {
     await Font.loadAsync({
-      'Montserrat-Bold': require('./assets/fonts/Montserrat-Bold.ttf'), 
+      'Montserrat-Bold': require('./frontend/static/Montserrat-Bold.ttf'), 
     });
     setFontsLoaded(true);
   };
