@@ -69,7 +69,7 @@ export default function App() {
 
       setLocation({ latitude, longitude });
 
-      const locationMessage = `My current location is:\nLatitude: ${latitude}\nLongitude: ${longitude}`;
+      const locationMessage = `My current location is:\nLatitude: ${latitude}\nLongitude: ${longitude} someone in my vicinity is in danger`;
       const smsUrl = `sms:?body=${encodeURIComponent(locationMessage)}`;
       const emailUrl = `mailto:?subject=My Location&body=${encodeURIComponent(locationMessage)}`;
 
