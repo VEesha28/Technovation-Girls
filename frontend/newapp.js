@@ -142,13 +142,22 @@ export default function App() {
 
       <View style={styles.quickOptions}>
         <TouchableOpacity style={styles.circle} onPress={handleMetronomePress}>
-          <Text style={styles.iconText}>Metronome</Text>
-        </TouchableOpacity>
+          <Image
+              source={{ uri: 'https://clipground.com/images/cpr-training-clipart-16.png' }} // Replace with a metronome image
+              style={styles.icon}
+          />
+          </TouchableOpacity>
         <TouchableOpacity style={styles.circle} onPress={handleLocationShare}>
-          <Text style={styles.iconText}>Location</Text>
+          <Image
+            source={{ uri: 'https://clipart-library.com/8300/2368/location-icon-clipart-xl.png' }}
+            style={styles.icon}
+          />
         </TouchableOpacity>
         <TouchableOpacity style={styles.circle} onPress={handleCallPress}>
-          <Text style={styles.iconText}>Call</Text>
+          <Image
+            source={{ uri: 'https://clipart-library.com/image_gallery2/Phone-PNG.png' }}
+            style={styles.icon}
+          />
         </TouchableOpacity>
       </View>
 
