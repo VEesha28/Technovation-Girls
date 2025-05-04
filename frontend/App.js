@@ -19,7 +19,7 @@ import { Card } from 'react-native-paper';
 import AssetExample from './components/AssetExample';
 
 export default function App() {
-  const [isFlashlightOn, setFlashlightOn] = useState(false);
+  const [isMetronomeVisible, setMetronomeVisible] = useState(false);
   const [isModalVisible, setModalVisible] = useState(false);
   const [location, setLocation] = useState(null);
   const [fontsLoaded, setFontsLoaded] = useState(false);
@@ -44,15 +44,27 @@ export default function App() {
     setFontsLoaded(true);
   };
 
-  const handleFlashlightPress = () => {
-    try {
-      setFlashlightOn(!isFlashlightOn);
-      Torch.switchState(!isFlashlightOn);
-    } catch (error) {
-      Alert.alert('Error', 'Flashlight functionality is not supported on this device.');
-    }
-  };
+  const handleMetronomePress = () => {
+  setMetronomeVisible(true);
+};
 
+<Modal isVisible={isMetronomeVisible}>
+  <View style={styles.modalContent}>
+    <Text style={styles.modalTitle}>Metronome for CPR</Text>
+    <Text style={styles.metronomeText}>Stay on the beat: 100–120 BPM</Text>
+    <Image
+      source={{ uri: 'https://clipart-library.com/8300/2368/metronome-icon.png' }} // Replace with a metronome image
+      style={styles.metronomeIcon}
+    />
+    <TouchableOpacity
+      onPress={() => setMetronomeVisible(false)}
+      style={styles.modalCloseButton}
+    >
+      <Text style={styles.modalCloseText}>Close</Text>
+    </TouchableOpacity>
+  </View>
+</Modal>
+  
   const handleLocationShare = async () => {
     try {
       const { status } = await Location.requestForegroundPermissionsAsync();
@@ -130,12 +142,12 @@ export default function App() {
       </View>
 
       <View style={styles.quickOptions}>
-        <TouchableOpacity style={styles.circle} onPress={handleFlashlightPress}>
+        <TouchableOpacity style={styles.circle} onPress={handleMetronomePress}>
           <Image
-            source={{ uri: 'https://clipart-library.com/8300/2368/flashlight-emoji-clipart-xl.png' }}
-            style={styles.icon}
+              source={{ uri: 'https://clipart-library.com/8300/2368/metronome-icon.png' }} // Replace with a metronome image
+              style={styles.icon}
           />
-        </TouchableOpacity>
+          </TouchableOpacity>
         <TouchableOpacity style={styles.circle} onPress={handleLocationShare}>
           <Image
             source={{ uri: 'https://clipart-library.com/8300/2368/location-icon-clipart-xl.png' }}
@@ -241,6 +253,18 @@ const styles = StyleSheet.create({
     height: 50,
     resizeMode: 'contain',
   },
+  metronomeText: {
+  fontSize: 18,
+  fontFamily: 'Montserrat-Bold',
+  textAlign: 'center',
+  marginVertical: 10,
+},
+metronomeIcon: {
+  width: 100,
+  height: 100,
+  resizeMode: 'contain',
+  marginBottom: 20,
+},
   modalContent: {
     backgroundColor: '#fff',
     padding: 20,
