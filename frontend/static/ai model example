@@ -1,0 +1,110 @@
+%%writefile app.py
+
+import requests
+import streamlit as st
+from openai import OpenAI
+
+# Initialize OpenAI client
+client = OpenAI(api_key="", base_url="")
+
+# Function to fetch NASA images
+def fetch_nasa_images(query):
+    url = f"https://images-api.nasa.gov/search?q={query}"
+    response = requests.get(url)
+
+    if response.status_code == 200:
+        items = response.json().get('collection', {}).get('items', [])
+        return items
+    else:
+        st.error("Failed to fetch images from NASA.")
+        return []
+
+def process_meddata_file(uploaded_file):
+    """Read and process the MedData text file."""
+    try:
+        content = uploaded_file.read().decode('utf-8')
+        return content
+    except Exception as e:
+        st.error(f"Error reading file: {e}")
+        return None
+
+def generate_overview(meddata_text):
+    """Generate an overview using the API."""
+    prompt = (
+        f"You are a nice scientist who takes the information from experiments and converts it into text for beginning scientists to understand:\n\n"
+        f"{meddata_text}\n\n"
+        "Using that information, answer these questions:\n"
+        "1. The number of subjects per group.\n"
+        "2. The treatment applied to each group.\n"
+        "3. Events leading up to the launch of the experiment to space.\n"
+        "4. Events following the return of the experiment from space.\n"
+        "5. Information about similar experiments that have been conducted."
+    )
+
+    response = client.chat.completions.create(
+        model="gpt-3.5-turbo",
+        messages=[
+            {"role": "system", "content": "You are a helpful assistant."},
+            {"role": "user", "content": prompt}
+        ]
+    )
+
+    return response.choices[0].message.content
+
+def generate_image(overview):
+    """Generate an image based on the overview text using API."""
+    prompt = f"Create a visual representation of the following experiment overview: {overview}"
+
+    try:
+        img = client.images.generate(
+            model="absolute-reality-v1.8.1",
+            prompt=prompt,
+            n=1,
+            size="1024x1024"
+        )
+
+        if 'data' in img and img['data']:
+            image_data = img['data'][0]
+            return image_data
+        else:
+            st.error("Image generation returned no data.")
+            return None
+    except Exception as e:
+        st.error(f"Image generation error: {e}")
+        return None
+
+# Streamlit UI
+st.title("OSDR MedData Overview Tool")
+
+# Sidebar for navigation
+st.sidebar.title("Navigation")
+page = st.sidebar.selectbox("Select a page:", ["Home", "Challenge Info", "Effects of Space", "General Space Info", "Analyze MedData"])
+
+if page == "Home":
+    st.write("Welcome to the OSDR MedData Overview Tool! Explore experiments and the wonders of space.")
+    st.write("Use the navigation bar to learn more about the challenges, effects of space, and analyze your MedData files.")
+
+elif page == "Analyze OSDR Data":
+    st.title("Paragraphs and Pictures Generated From OSDR Links")
+    st.write("This tool can help beginning ")
+    uploaded_file = st.file_uploader("Upload OSDR MedData Text File:", type=["txt"])
+
+    if st.button("Analyze Experiment"):
+        if uploaded_file is not None:
+            meddata_text = process_meddata_file(uploaded_file)
+
+            if meddata_text:
+                overview = generate_overview(meddata_text)
+
+                st.subheader("Experiment Overview:")
+                st.write(overview)
+
+                image_data = generate_image(overview)
+
+                if image_data:
+                    st.subheader("Generated Visualization:")
+                    st.image(image_data, caption="Visualization of the Experiment Overview", use_column_width=True)
+                else:
+                    st.error("Image generation failed. Please try again.")
+        else:
+            st.error("Please upload a valid OSDR MedData text file.")
