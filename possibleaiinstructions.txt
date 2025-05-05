@@ -28,3 +28,10 @@ answer all questions accoringly
 
 
 """
+body: JSON.stringify({
+  messages: [
+    { role: 'system', content:aiinstructions },
+    ...messages,
+    userMessage,
+  ],
+}),
