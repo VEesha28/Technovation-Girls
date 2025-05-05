@@ -17,7 +17,7 @@ import Modal from 'react-native-modal';
 import { Picker } from '@react-native-picker/picker';
 import * as Font from 'expo-font';
 
-import AIChatScreen from './AIPage';
+import AIChatScreen from './screens/AIPage';
 
 const languageOptions = [
   { label: 'English (US)', value: 'en-US' },
