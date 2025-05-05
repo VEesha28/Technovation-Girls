@@ -8,7 +8,7 @@ import {
   TouchableOpacity,
   Alert,
   Linking,
-  Animated, // Import Animated for the pulsing effect
+  Animated,
 } from 'react-native';
 import Torch from 'react-native-torch';
 import * as Location from 'expo-location';
@@ -20,7 +20,7 @@ export default function App() {
   const [isModalVisible, setModalVisible] = useState(false);
   const [location, setLocation] = useState(null);
   const [fontsLoaded, setFontsLoaded] = useState(false);
-  const pulseAnim = useRef(new Animated.Value(1)).current; // Initial scale value for pulsing
+  const pulseAnim = useRef(new Animated.Value(1)).current;
 
   const emergencyNumbers = [
     { name: '911 (USA)', number: '19732238901' },
@@ -46,13 +46,13 @@ export default function App() {
     Animated.loop(
       Animated.sequence([
         Animated.timing(pulseAnim, {
-          toValue: 1.2, // Scale up
-          duration: 500, // Half a second (for 120 BPM)
+          toValue: 1.2,
+          duration: 500,
           useNativeDriver: true,
         }),
         Animated.timing(pulseAnim, {
-          toValue: 1, // Scale back down
-          duration: 500, // Half a second (for 120 BPM)
+          toValue: 1,
+          duration: 500,
           useNativeDriver: true,
         }),
       ])
@@ -64,14 +64,38 @@ export default function App() {
     startPulsing();
   };
 
+  const handleLocationShare = async () => {
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    if (status !== 'granted') {
+      Alert.alert('Permission denied', 'Location permissions are required.');
+      return;
+    }
+    const location = await Location.getCurrentPositionAsync({});
+    setLocation(location);
+    Alert.alert('Location Shared', JSON.stringify(location));
+  };
+
+  const handleCallPress = () => {
+    setModalVisible(true);
+  };
+
+  const handleNumberPress = (number) => {
+    Linking.openURL(`tel:${number}`);
+  };
+
+  return (
+    <ScrollView style={styles.container}>
+      <View style={styles.header}>
+        <Text style={styles.headerText}>Emergency App</Text>
+      </View>
 
       <View style={styles.quickOptions}>
         <TouchableOpacity style={styles.circle} onPress={handleMetronomePress}>
           <Image
-              source={{ uri: 'https://clipground.com/images/cpr-training-clipart-16.png' }} // Replace with a metronome image
-              style={styles.icon}
+            source={{ uri: 'https://clipground.com/images/cpr-training-clipart-16.png' }}
+            style={styles.icon}
           />
-          </TouchableOpacity>
+        </TouchableOpacity>
         <TouchableOpacity style={styles.circle} onPress={handleLocationShare}>
           <Image
             source={{ uri: 'https://clipart-library.com/8300/2368/location-icon-clipart-xl.png' }}
@@ -147,36 +171,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     fontFamily: 'Montserrat-Bold',
   },
-  infoBox: {
-    backgroundColor: 'rgba(139, 0, 0, 0.7)',
-    borderRadius: 16,
-    padding: 20,
-    margin: 20,
-  },
-  sectionTitle: {
-    fontSize: 24,
-    color: '#fefefe',
-    fontFamily: 'Montserrat-Bold',
-    textAlign: 'center',
-  },
-  options: {
-    flexDirection: 'row',
-    justifyContent: 'space-around',
-    marginHorizontal: 10,
-  },
-  optionCard: {
-    backgroundColor: '#8b0000',
-    borderRadius: 16,
-    padding: 30,
-    width: '45%',
-    alignItems: 'center',
-  },
-  optionText: {
-    color: '#fefefe',
-    fontSize: 20,
-    fontFamily: 'Montserrat-Bold',
-    textAlign: 'center',
-  },
   quickOptions: {
     flexDirection: 'row',
     justifyContent: 'space-around',
@@ -191,10 +185,9 @@ const styles = StyleSheet.create({
     justifyContent: 'center',
     alignItems: 'center',
   },
-  iconText: {
-    color: '#fff',
-    fontSize: 14,
-    textAlign: 'center',
+  icon: {
+    width: 50,
+    height: 50,
   },
   pulsingCircle: {
     width: 150,
@@ -224,4 +217,3 @@ const styles = StyleSheet.create({
     fontFamily: 'Montserrat-Bold',
   },
 });
-
